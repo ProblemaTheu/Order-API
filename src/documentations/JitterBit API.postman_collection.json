@@ -1,0 +1,366 @@
+{
+	"info": {
+		"_postman_id": "3b4a56bd-02b4-492b-88fc-1b113c6364f8",
+		"name": "JitterBit API",
+		"description": "# Documentação da API de Pedidos\n\n## Introdução\n\nBem-vindo à documentação da API de Pedidos. Esta API permite criar, ler, atualizar e excluir pedidos.\n\n**Versão:** 1.0.0  \n**Base URL:** [<code>http://localhost:3000</code>](http://localhost:3000)\n\n## Banco de dados\n\nPara o uso de database foi criado um banco de dados em MongoDB Atlas, para acessa-lo, use o caminho: `` `mongodb+srv://matheus26fernandes:WbsdeMfEpO8JOa6Z@cluster0.kdjcjsn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0` ``\n\nCom duas collections, uma para os pedidos `Orders` e uma para usuários `Users`\n\n## Autenticação\n\nEsta API usa JWT (JSON Web Token) para autenticação. Você deve incluir o token de autenticação no cabeçalho de cada requisição, **caso uso Postman, que é totalmente recomendavel, basta adicionar o token em authorization.**\n\n**Se deseja realizar um login e pegar um token, logue com:**\n\n``` json\n{\n    \"email\": \"matheus26.fernandes@gmail.com\",\n    \"password\": \"admin\"\n}\n\n ```\n\n**Cabeçalho de Autenticação:**\n\n``` makefile\nAuthorization: Bearer <seu_token_jwt>\n\n ```\n\nPara obter um token, faça login usando o endpoint de autenticação.\n\n---\n\n# Funções (Usuários/User)\n\nPara as funções/requisições que envolvem a criação e login de usuario, espera-se que o objeto enviado siga esse exemplo, com seus determinados tipos por parametro respectivamente.\n\n``` json\n{\n    \"email\": \"matheus.souza@souzaemail.com\",\n    \"password\": \"12345678\"\n}\n\n ```\n\nPara cada erro de tipagem ou falta de parametro no objeto enviado, é retornado um erro especifico com a informação de como se espera que o objeto seja enviado. Exemplos:\n\n\\-\n\n**\"email\":** E-mail inválido\\* / O parâmetro email está faltando\n\n**\"password\":** O parâmetro password está faltando\n\n\\-\n\n\\*O e-mail pode retornar um erro por invalidez pois existe uma validação de RegEx de e-mail a partir da documentação RFC2822 Email Validation ([<i>https://regexr.com/2rhq7</i>](https://regexr.com/2rhq7)_)_\n\n---\n\n# Funções (Pedido/Order)\n\nPara as funções/requisições que envolvem a criação, atualização e visualização de pedidos que tenham como passo de seu trabalho a categoria de • **Validar o objeto enviado pelo usuário** , espera-se que o objeto enviado siga esse exemplo, com seus determinados tipos por parametro respectivamente.\n\n``` json\n{\n    \"numeroPedido\": \"v10089015vdb-01\",\n    \"valorTotal\": 200000,\n    \"dataCriacao\": \"2023-07-19T12:24:11.5299601+00:00\",\n    \"items\": [\n    {\n        \"idItem\": \"1\",\n        \"quantidadeItem\": 1,\n        \"valorItem\": 1000\n    }\n    ]\n}\n\n ```\n\nPara cada erro de tipagem ou falta de parametro no objeto enviado, é retornado um erro especifico com a informação de como se espera que o objeto seja enviado. Exemplos:\n\n\\-\n\n**\"numeroPedido\":** Número do pedido é inválido, é necessário que seja uma string\n\n**\"valorTotal\":** Valor total é inválido, é necessário que seja um número\n\n**\"numeroPedido\":** Número do pedido é inválido, é necessário que seja uma string\n\n**\"dataCriacao\":** Data de criação do pedido é inválido, é necessário que seja uma string (preferencialmente em um modelo de objeto Data\n\n**\"items\":** Items são inválidos, é necessário conter os parametro idItem, quantidadeItem e valorItem\n\n\\-\n\nE, para cada parametro dentro do objeto \"Items\" também seguirá a ideia de erro mencionada anteriormente. Exemplos:\n\n\\-\n\n**\"idItem\":** ID do item é inválido, é ncessário que seja um número ou uma string numérica\n\n**\"quantidadeItem\":**Quantidade do item é inválida, é necessário que seja um número inteiro\n\n**\"valorItem\":** Valor do item é inválido, é necessário que seja um número\n\n\\-\n\nJá para as funções/requisições que envolvem a criação, atualização e visualização de pedidos que tenham como passo de seu trabalho a categoria de • **Verificar se o token é autenticado,** segue os erros retornados por falha de autenticação\n\n\\-\n\n`404 Bad Request:` O usuário não está autorizados a fazer as funções.\n\n``` json\n{\n      message: \"Usuário não autorizado\"\n}\n\n ```\n\n`404 Bad Request:` O usuário não tem um token válido a fazer as funções.\n\n``` json\n{\n      message: \"Token não é válido\"\n}\n\n ```",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34677235"
+	},
+	"item": [
+		{
+			"name": "Criar pedido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmM1ODM0Njg5YzgwYmY3MWVkYjE2ZSIsImlhdCI6MTcxODM3OTI5NywiZXhwIjoxNzE4MzgyODk3fQ.dRitx_pCsI-DeJ7v1Ebf-9zh50dEUgeOxC2E7gFHDeU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"numeroPedido\": \"v10089015vdb-01\",\n    \"valorTotal\": 200000,\n    \"dataCriacao\": \"2023-07-19T12:24:11.5299601+00:00\",\n    \"items\": [\n    {\n        \"idItem\": \"1\",\n        \"quantidadeItem\": 1,\n        \"valorItem\": 1000\n    }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order"
+					]
+				},
+				"description": "Esta requisição cria um pedido no banco de dados, seguindo o modelo de pedido.\n\nNa função especificada ele segue o seguinte processo:\n\n\\-\n\n- Verificar se o token é autenticado\n    \n- Verificar se o pedido já existe pelo ID\n    \n- Validar o objeto enviado pelo usuário\n    \n- Mapear o objeto para a adequação ao banco de dados\n    \n- Criação do pedido no banco de dados\n    \n\n\\-\n\n`201 OK:` O pedido é criado no banco de dados com o retorno\n\n``` json\n{\n      message: \"Pedido criado com sucesso\", \n      data: *exemplo de objeto de pedido*\n}\n\n ```\n\n`404 Bad Request:` O pedido já existe no banco de dados (baseando-se no ID), então um novo pedido não é criado(para atualização, verifique: PUT).\n\n``` json\n{\n      message: \"Pedido já existe\"\n}\n\n ```"
+			},
+			"response": [
+				{
+					"name": "Pedido de erro já existente",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numeroPedido\": \"v10089015vdb-01\",\n    \"valorTotal\": 200000,\n    \"dataCriacao\": \"2023-07-19T12:24:11.5299601+00:00\",\n    \"items\": [\n    {\n        \"idItem\": \"1\",\n        \"quantidadeItem\": 1,\n        \"valorItem\": 1000\n    }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "55"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"37-Zd/6flhpwEYXIRkDUxwi3QfLGDw\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 14 Jun 2024 16:03:12 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Erro ao criar o pedido: Pedido já existe\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Atualizar pedido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmM1NGM2NmRjMDk1Y2MzM2YxY2JlOCIsImlhdCI6MTcxODM3NTY1NiwiZXhwIjoxNzE4Mzc5MjU2fQ.-HDibpodSyuW59demqfpIm1HFJ-yGrnqrcsx0ep8cSM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"numeroPedido\": \"v10089015vdb-01\",\n    \"valorTotal\": 200000,\n    \"dataCriacao\": \"2023-07-19T12:24:11.5299601+00:00\",\n    \"items\": [\n    {\n        \"idItem\": \"1\",\n        \"quantidadeItem\": 1,\n        \"valorItem\": 1000\n    }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/order/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				},
+				"description": "Essa requisição atualiza um pedido já existente no banco de dados, seguindo o modelo de pedido, na função especificada, é seguido o seguinte processo:\n\n\\-\n\n- Verificar se o token é autenticado\n    \n- Verificar se o pedido já existe pelo ID\n    \n- Verificar se o objeto não vem vazio\n    \n- Validar o objeto enviado pelo usuário\n    \n- Mapear o objeto para a adequação ao banco de dados\n    \n- Atualização do pedido no banco de dados\n    \n\n\\-\n\n`201 OK:` O pedido é atualizado no banco de dados com o retorno\n\n``` json\n{\n      message: \"Pedido atualizado com sucesso\", \n      data: *exemplo de objeto de pedido*\n}\n\n ```\n\n`404 Bad Request:` O pedido não existe no banco de dados (baseando-se no ID), então o pedido não é atualizado (para criação, verifique: POST).\n\n``` json\n{\n      message: \"Pedido não existe\"\n}\n\n ```\n\n`404 Bad Request:` O objeto enviado pelo usuario está vazio, então o pedido não é atualizado.\n\n``` json\n{\n      message: \"Nenhum dado para atualização foi fornecido\"\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar pedido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful DELETE request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmM1NGM2NmRjMDk1Y2MzM2YxY2JlOCIsImlhdCI6MTcxODM3NTY1NiwiZXhwIjoxNzE4Mzc5MjU2fQ.-HDibpodSyuW59demqfpIm1HFJ-yGrnqrcsx0ep8cSM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/order/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				},
+				"description": "Essa requisição deleta um pedido no banco de dados, na função especificada, é seguido o seguinte processo:\n\n\\-\n\n- Verificar se o token é autenticado\n    \n- Verificar se o pedido já existe pelo ID\n    \n- Remoção do pedido no banco de dados\n    \n\n\\-\n\n`201 OK:` O pedido é atualizado no banco de dados com o retorno\n\n``` json\n{\n      message: \"Pedido deletado com sucesso\", \n}\n\n ```\n\n`404 Bad Request:` O pedido não existe no banco de dados (baseando-se no ID), então o pedido não é atualizado (para criação, verifique: POST).\n\n``` json\n{\n      message: \"Pedido não existe\"\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Pegar pedido por ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmM1NGM2NmRjMDk1Y2MzM2YxY2JlOCIsImlhdCI6MTcxODM3NTY1NiwiZXhwIjoxNzE4Mzc5MjU2fQ.-HDibpodSyuW59demqfpIm1HFJ-yGrnqrcsx0ep8cSM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/order/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				},
+				"description": "Essa requisição pega um pedido no banco de dados com o ID especificado na URL, na função especificada, é seguido o seguinte processo:\n\n\\-\n\n- Verificar se o token é autenticado\n    \n- Verificar se o pedido já existe pelo ID\n    \n\n\\-\n\n`201 OK:` O pedido é retornado como objeto ao usuário\n\n``` json\n{\n      data: *exemplo de objeto de pedido*\n}\n\n ```\n\n`404 Bad Request:` O pedido não existe no banco de dados (baseando-se no ID), então o pedido não é atualizado (para criação, verifique: POST).\n\n``` json\n{\n      message: \"Pedido não encontrado\"\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Pegar todos os pedidos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/order/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order",
+						"list"
+					]
+				},
+				"description": "Essa requisição pega todos os pedidos no banco de dados, na função especificada, é seguido o seguinte processo:\n\n\\-\n\n- Verificar se o token é autenticado\n    \n- Procura os dados no banco de dados\n    \n\n\\-\n\n`201 OK:` O pedido é retornado como objeto ao usuário\n\n``` json\n{\n      data: [*exemplo de objeto de pedido*]\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"matheus.souza@souzaemail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				},
+				"description": "Essa requisição envia um objeto com email e senha para o sistema para aprovar (ou não) o login de usuario e gerar seu token, na função especificada, é seguido o seguinte processo:\n\n\\-\n\n- Valida o objeto enviado pelo usuario\n    \n- Valida se o e-mail segue o padrão RegEx especificado\n    \n- Procura o email cadastrado no banco de dados\n    \n- Compara as senhas descriptografadas\n    \n- Passa o token para o usuário\n    \n\n\\-\n\n`201 OK:` O pedido é retornado como objeto ao usuário\n\n``` json\n{\n    \"message\": \"Login realizado com sucesso\",\n    \"data\": {\n        \"token\": \"modelo de token\"\n    }\n}\n\n ```\n\n`404 Bad Request:` O email enviado não segue o padrão RegEx.\n\n``` json\n{\n      message: \"E-mail invalido\"\n}\n\n ```\n\n`404 Bad Request:` O email enviado não bate com nenhum email no banco de dados.\n\n``` json\n{\n      message: \"Usuário não encontrado\"\n}\n\n ```\n\n`404 Bad Request:` A senha enviada não bate com a senha do banco de dados\n\n``` json\n{\n      message: \"Usuário não autorizado\"\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Usuário",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"matheus.souza@souzaemail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"register"
+					]
+				},
+				"description": "Essa requisição envia um objeto com email e senha para o sistema para aprovar (ou não) o login de usuario e gerar seu token, na função especificada, é seguido o seguinte processo:\n\n\\-\n\n- Valida o objeto enviado pelo usuario\n    \n- Valida se o e-mail segue o padrão RegEx especificado\n    \n- Procura o email cadastrado no banco de dados\n    \n- Encripta a senha passada\n    \n- Cria o usuario no banco de dados\n    \n\n\\-\n\n`201 OK:` O pedido é retornado como objeto ao usuário\n\n``` json\n{\n    \"message\": \"Conta registrada com sucesso, faça login para gerar seu token\",\n}\n\n ```\n\n`404 Bad Request:` O email enviado não segue o padrão RegEx.\n\n``` json\n{\n      message: \"E-mail invalido\"\n}\n\n ```\n\n`404 Bad Request:` O email enviado bate com um email que ja esta no banco de dados.\n\n``` json\n{\n      message: \"Usuário já existe\"\n}\n\n ```"
+			},
+			"response": []
+		}
+	]
+}
