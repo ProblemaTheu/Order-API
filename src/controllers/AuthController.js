@@ -7,6 +7,7 @@ dotenv.config();
 
 const secret = process.env.JWT_SECRET
 
+//função de login
 const login = async (req, res) => {
     try {
         validateJson(req.body)
@@ -33,6 +34,7 @@ const login = async (req, res) => {
     }
 }
 
+//função de criar usuario no db
 const createUser = async (req, res) => {
     try {
         validateJson(req.body);
@@ -56,6 +58,7 @@ const createUser = async (req, res) => {
     }
 }
 
+//função de verificar token
 const verifyToken = (req, res, next) => {
     const tokenHeader = req.headers["authorization"];
     const token = tokenHeader && tokenHeader.split(" ")[1];
@@ -73,6 +76,7 @@ const verifyToken = (req, res, next) => {
     }
 }
 
+//função de validar json (se o usuario enviou e-mail e senha corretamente)
 function validateJson(data) {
     if (typeof data !== 'object' || data === null) {
         throw new Error("Input deve ser um objeto JSON válido");
@@ -88,6 +92,7 @@ function validateJson(data) {
     return true;
 }
 
+//função de regEx para verificar o email segue os padrões de example@email.post
 function validateEmailRegex(data){
     return /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(data)
 }
